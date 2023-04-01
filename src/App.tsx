@@ -1,24 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
+import { Button, Typography } from '@mui/material';
+import { useCallback, useMemo, useState } from 'react';
 import './App.css';
+import useAwaitableComponent from './components/useAwaitableComponent';
+import UserInfoInputDialog from './components/UserInfoInputDialog';
 
 function App() {
+  const [status, execute, resolve, reject] = useAwaitableComponent<string | undefined>()
+  const open = useMemo(() => status === 'awaiting', [status])
+  const [userNames, setUserNames] = useState<string[]>([])
+
+  const handleAddUserClicked = useCallback(async () => {
+    await execute().then(userName => {
+      if (userName){
+        setUserNames([...userNames, userName])
+      }
+    }).catch(error => {})
+  }, [open, userNames])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div>
+        Testing Refs
+      </div>
+      {
+        userNames.map((userName, index) => (
+          <Typography key={`${userName}-${index}`}>{userName}</Typography>
+        ))
+      }
+      <Button onClick={handleAddUserClicked}>Add User</Button>
+
+      <UserInfoInputDialog open={open} onConfirm={resolve} onCancel={reject}/>
     </div>
   );
 }
