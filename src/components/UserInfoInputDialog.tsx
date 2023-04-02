@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material"
-import { useRef } from "react"
+import { useCallback, useRef } from "react"
 
 type UserInfoInputDialogProps = {
     open: boolean,
@@ -9,6 +9,17 @@ type UserInfoInputDialogProps = {
 
 const UserInfoInputDialog = (props: UserInfoInputDialogProps) => {
     const userName = useRef<string | undefined>(undefined)
+
+    const handleConfirmClicked = useCallback(() => {
+      const selectedUserName = userName.current
+      userName.current = undefined
+      return props.onConfirm(selectedUserName)
+    }, [props])
+
+    const handleCancelClicked = useCallback(() => {
+      userName.current = undefined
+      return props.onCancel('No user was added.')
+    }, [props])
 
     return (
         <Dialog open={props.open} onClose={props.onCancel}>
@@ -28,8 +39,11 @@ const UserInfoInputDialog = (props: UserInfoInputDialogProps) => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={props.onCancel}>Cancel</Button>
-          <Button onClick={() => props.onConfirm(userName.current)}>Add</Button>
+          <Button onClick={handleCancelClicked}>Cancel</Button>
+          <Button onClick={handleConfirmClicked}
+          >
+            Add
+          </Button>
         </DialogActions>
       </Dialog>
     )

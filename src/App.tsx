@@ -15,20 +15,21 @@ function App() {
         setUserNames([...userNames, userName])
       }
     }).catch(error => {})
-  }, [open, userNames])
+  }, [execute, userNames])
 
   return (
-    <div>
-      <div>
-        Testing Refs
+    <div style={{width: '20%'}}>
+      <div style={{display: 'flex', flexDirection: 'row'}}>
+        <div style={{flex: '1 0 60%'}}>User Names:</div>
+        <Button style={{flex: '1 0 40%'}} variant='contained' onClick={handleAddUserClicked}>Add User</Button>
       </div>
-      {
-        userNames.map((userName, index) => (
-          <Typography key={`${userName}-${index}`}>{userName}</Typography>
-        ))
-      }
-      <Button onClick={handleAddUserClicked}>Add User</Button>
-
+      <div>
+        {
+          userNames.map((userName, index) => (
+            <Typography key={`${userName}-${index}`}>{userName}</Typography>
+          ))
+        }
+      </div>
       <UserInfoInputDialog open={open} onConfirm={resolve} onCancel={reject}/>
     </div>
   );
